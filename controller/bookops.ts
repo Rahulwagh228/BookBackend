@@ -28,4 +28,24 @@ export const addBook = async (req: AuthRequest, res: Response) => {
     }
 }
 
-// router.post('/addBook', )
+export const allBooks = async (req: AuthRequest, res: Response) => {
+    console.log("all Books api hitt")
+    try {
+        const userId = req.userId;
+        console.log(userId, "useridddddddddddddddddd")
+        if (!userId) return res.status(401).json({ message: "User not authenticated" });
+
+        const books = await Book.find({ userId });
+        const totalCount = await Book.countDocuments({ userId });
+
+        return res.status(200).json({ 
+            message: "Books fetched successfully", 
+            totalCount, 
+            books 
+        });
+    }
+    catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Error in fetching books" });
+    }
+}
